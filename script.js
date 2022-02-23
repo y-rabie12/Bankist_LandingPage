@@ -1,4 +1,4 @@
-'use strict';
+use strict';
 
 ///////////////////////////////////////
 // Modal window
@@ -7,6 +7,8 @@ const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+
+const nav = document.querySelector('.nav')
 
 const openModal = function (e) {
   e.preventDefault()
@@ -39,6 +41,8 @@ document.addEventListener('keydown', function (e) {
 const learnMore = document.querySelector('.btn--scroll-to');
 
 const section1 = document.querySelector('#section--1')
+ 
+const navLinks = document.querySelector('.nav__links');
 
 
 learnMore.addEventListener('click',function(e){
@@ -75,22 +79,108 @@ learnMore.addEventListener('click',function(e){
     // Another way ,which is way more modern
     
     section1.scrollIntoView({behavior:'smooth'});
+}) 
+
+
+
+// Using event bubbling
+
+
+nav.addEventListener('click',function(e){
+    e.preventDefault();
+    let id = e.target.getAttribute('href');
+    let section = document.querySelector(`${id}`);
+     
+    section.scrollIntoView({behavior:'smooth'})
 })
 
 
+// Building a tabbed component
+
+const tabs = document.querySelectorAll('.operations__tab')
+
+const tabsContainer = document.querySelector('.operations__tab-container')
+
+const tabsContent = document.querySelectorAll('.operations__content')
+
+
+// Using event bubbling and event delegation
+tabsContainer.addEventListener('click',function(e){
+    
+     let clicked = e.target.closest('.operations__tab')
+
+     if(!clicked) return
+
+     tabs.forEach(tab => tab.classList.remove('operations__tab--active'))
+     tabsContent.forEach(tab => tab.classList.remove('operations__content--active'))
+
+
+     clicked.classList.add('operations__tab--active') 
+     document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations__content--active')
+})
+
+/*
 let h1= document.querySelector('h1')
 
-h1.addEventListener('mouseenter',function(e){
+const h1Alert = function(e){
     alert("Great the add eventlistner has been added to make sure to work on it")
-})
+}
+
+
+
+h1.addEventListener('mouseenter', h1Alert)
+
+// This is used to remove the eventListner function
+setTimeout(()=>h1.removeEventListener('mouseenter',h1Alert),3000)
+
+*/
+
+
+
+/*
+
+// that's the whole nav
+const nav = document.querySelector('.nav__links');
+
+// that's the link itself
+const links = document.querySelectorAll('.nav__link')
+
+const items = document.querySelectorAll('.nav__item')
+
+
+let randomColor = () => Math.trunc((Math.random() * 255 )+1)
+
+
+
+This is an example of how event bubbling works
+
+links.forEach((link) => link.addEventListener('click',function(e){
+     e.preventDefault();
+    let color = `rgb(${randomColor()},${randomColor()},${randomColor()})`
+    this.style.backgroundColor =color
+}))
+
+nav.addEventListener('click',function(){
+  let color = `rgb(${randomColor()},${randomColor()},${randomColor()})`
+  this.style.backgroundColor =color
+}) */
 
 
 
 
 
+/* The normal way of it 
 
+const links = document.querySelectorAll('.nav__link')
 
+links.forEach((link) => link.addEventListener('click',function(e){
+  e.preventDefault();
+  let id = this.getAttribute('href');
+  let section = document.querySelector(`${id}`)
 
+  section.scrollIntoView({behavior:'smooth'})
+}))
+*/
 
 
 
