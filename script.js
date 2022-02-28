@@ -1,4 +1,4 @@
-use strict';
+'use strict';
 
 ///////////////////////////////////////
 // Modal window
@@ -118,6 +118,86 @@ tabsContainer.addEventListener('click',function(e){
      clicked.classList.add('operations__tab--active') 
      document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations__content--active')
 })
+
+
+
+// how to highlight the whole area 
+
+
+let handleOpacity = function(e){
+ 
+  if(e.target.classList.contains('nav__link')){
+    let el  = e.target;
+    let siblings = el.closest('.nav').querySelectorAll('.nav__link');
+    siblings.forEach((child) => {
+      if(child !== el){
+        child.style.opacity = this
+      }
+    })
+    let logo = document.querySelector('.nav__logo');
+    logo.style.opacity = this
+      
+   }
+}
+
+nav.addEventListener('mouseover',handleOpacity.bind(0.5))
+
+nav.addEventListener('mouseout',handleOpacity.bind(1))
+
+
+
+
+// Implement Sticky navigation using Intersection Observer API
+
+const header = document.querySelector('.header')
+const navHeight = nav.getBoundingClientRect().height
+
+const obsOpt = {
+  root:null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`
+}
+
+const headerFunc = function(entries){
+        entries.forEach((entry) => {
+          if(!entry.isIntersecting){
+            nav.classList.add('sticky')
+          }
+          else{
+            nav.classList.remove('sticky')
+          }
+        })
+}
+
+const headerObserver = new IntersectionObserver(headerFunc,obsOpt)
+
+headerObserver.observe(header)
+
+
+// Reveal Sections on scroll
+
+const secOps = {
+  root:null,
+  threshold:0.15,
+}
+
+const secFunc =  function(entries){
+      const [entry] =  entries
+      if(!entry.isIntersecting)  return
+      entry.target.classList.remove('section--hidden')
+      secObserver.unobserve(entry.target)
+}
+
+
+// here I need to observe all four sections
+
+const sections = document.querySelectorAll('.section')
+
+const secObserver =  new IntersectionObserver(secFunc,secOps)
+
+sections.forEach((section) => secObserver.observe(section))
+
+
 
 /*
 let h1= document.querySelector('h1')
