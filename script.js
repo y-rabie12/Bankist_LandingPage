@@ -199,6 +199,123 @@ sections.forEach((section) => secObserver.observe(section))
 
 
 
+// Implementing lazy loading 
+
+// What's supposed to happen 
+
+// First create the intersection observer API
+
+const picOps = {
+  root:null,
+  threshold:0,
+}
+
+const obsFunc = function(entries){
+     let [entry] = entries;
+     let target =  entry.target
+     if(!entry.isIntersecting) return 
+     target.src = target.dataset.src;
+
+     target.addEventListener('load',function(){
+        target.classList.remove('lazy-img')
+     })
+}
+
+const picObserver =  new IntersectionObserver(obsFunc,picOps)
+
+// We need to select all the pictures:
+
+const photos = document.querySelectorAll('img[data-src]')
+
+photos.forEach((photo) => picObserver.observe(photo))
+console.log(photos)
+
+
+
+// implementing the slider component 
+
+// let's select the two buttons or arrows that we use for sliding
+
+const btnRight =  document.querySelector('.slider__btn--right')
+
+const btnLeft = document.querySelector('.slider__btn--left')
+
+// We need to select all the slides 
+
+
+const slides = document.querySelectorAll('.slide')
+
+// now how the slider is implemented ?
+
+// We use the transform property 
+
+
+slides.forEach((slide, i) => slide.style.transform = `translateX(${100 * i}%)`)
+// We are starting at 0 for the right btn
+
+let currSlide = 0;
+let length = document.querySelectorAll('.slide').length
+console.log(length)
+
+const goToSlide =  function(currSlide){
+  slides.forEach((slide, i) => slide.style.transform = `translateX(${100 * (i - currSlide)}%)`)
+}
+
+const nextSlide =  function(){
+  if(currSlide === length-1) currSlide =0
+  else currSlide++
+  goToSlide(currSlide)
+}
+
+const prevSlide = function(){
+  if(currSlide === 0){
+    currSlide = length-1
+  }
+  else{
+    currSlide--
+  }
+  goToSlide(currSlide)
+}
+
+// how to implement the dots 
+
+// select the dots container
+
+const dotsContainer =  document.querySelector('.dots')
+
+const createDots =  function(){
+ 
+  slides.forEach((_,i) => dotsContainer.insertAdjacentHTML('beforeend', `<button class="dots__dot" data-slide=${i}> </button>`))
+}
+
+
+createDots()
+
+
+btnRight.addEventListener('click', nextSlide)
+
+
+btnLeft.addEventListener('click',prevSlide)
+
+// Used when we click on the left or right arrows 
+document.addEventListener('keydown',function(e){
+   if(e.key === 'ArrowRight') nextSlide()
+   else if (e.key === 'ArrowLeft') prevSlide()
+})
+
+dotsContainer.addEventListener('click',function(e){
+  if(e.target.classList.contains('dots__dot')) {
+    let {slide} = e.target.dataset
+    let childDots = dotsContainer.querySelectorAll('.dots__dot')
+  
+    childDots.forEach((dot) => dot.classList.remove('dots__dot--active'))
+    e.target.classList.add('dots__dot--active')
+   
+    
+    goToSlide(slide)
+  }
+})
+
 /*
 let h1= document.querySelector('h1')
 
